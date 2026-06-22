@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
@@ -7,7 +9,7 @@ List<Trainer> trainers = [];
 app.MapPost("/api/clients", (Client client) => {
     client.id = Guid.NewGuid();
     clients.Add(client);
-    return client;
+    return Results.Created($"/api/clients/{client.id}", client);
 });
 app.MapPut("/api/clients/{id}", (string id, Client newclient) => {
     var client = clients.FirstOrDefault(c => c.id.ToString() == id);
@@ -72,7 +74,7 @@ app.MapPost("/api/clients/{clientId}/trainer/{trainerId}", (string clientId, str
 app.MapPost("/api/trainers", (Trainer trainer) => {
     trainer.id = Guid.NewGuid();
     trainers.Add(trainer);
-    return trainer;
+    return Results.Created($"/api/trainers/{trainer.id}", trainer);
 });
 app.MapPut("/api/trainers/{id}", (string id, Trainer newtrainer) => {
     var trainer = trainers.FirstOrDefault(t => t.id.ToString() == id);
@@ -131,7 +133,9 @@ class Trainer {
     public Status status { get; set; }
 }
 
-enum Status {
+[JsonConverter(typeof(JsonStringEnumConverter))]
+enum Status
+{
     WORKING,
     ON_LEAVE,
     NOT_WORKING
