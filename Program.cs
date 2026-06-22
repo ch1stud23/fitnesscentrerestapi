@@ -93,7 +93,7 @@ app.MapPost("/api/clients", (Client client) => {
             command.ExecuteNonQuery();
         }
     }
-    return client;
+    return Results.Created($"/api/clients/{client.id}", client);
 });
 app.MapPut("/api/clients/{id}", (string id, Client client) => {
     using var connection = new SqliteConnection(connectionString);
@@ -481,7 +481,7 @@ app.MapPost("/api/trainers", (Trainer trainer) => {
         command.Parameters.AddWithValue("$status", (int)trainer.status);
         command.ExecuteNonQuery();
     }
-    return trainer;
+    return Results.Created($"/api/clients/{trainer.id}", trainer);
 });
 app.MapPut("/api/trainers/{id}", (string id, Trainer trainer) => {
     using (var connection = new SqliteConnection(connectionString))
